@@ -8,7 +8,7 @@ class JokeList extends React.Component {
 	static defaultProps = { numJokesToGet: 10 };
 	constructor(props) {
 		super(props);
-		this.state = { jokes: [] };
+		this.state = { jokes: JSON.parse(localStorage.getItem("jokes")) || [] };
 		this.getJokes = this.getJoke.bind(this);
 	}
 
@@ -40,7 +40,12 @@ class JokeList extends React.Component {
 	}
 
 	async componentDidUpdate() {
+		console.log("hi");
 		if (this.state.jokes.length === 0) await this.getJokes();
+		localStorage.setItem(
+			"jokes",
+			JSON.stringify(this.state.jokes.filter((j) => j.votes > 0))
+		);
 	}
 
 	generateNewJokes = () => this.setState({ jokes: [] });
@@ -49,6 +54,14 @@ class JokeList extends React.Component {
 		this.setState({
 			jokes: this.state.jokes.map((j) =>
 				j.id === id ? { ...j, votes: j.votes + delta } : j
+			),
+		});
+	};
+
+	reset = (id) => {
+		this.setState({
+			jokes: this.state.jokes.map((j) =>
+				j.id === id ? { ...j, votes: 0 } : j
 			),
 		});
 	};
@@ -69,6 +82,7 @@ class JokeList extends React.Component {
 							id={j.id}
 							votes={j.votes}
 							vote={this.vote}
+							reset={this.reset}
 						/>
 					))}
 				</div>

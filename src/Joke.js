@@ -16,8 +16,11 @@ class Joke extends React.Component {
 
 					{this.props.votes}
 				</div>
-
-				<div className="Joke-text">{this.props.text}</div>
+				<div className="Joke-votearea">
+					<div className="Joke-text">{this.props.text}</div>
+					<button onClick={() => this.props.reset(this.props.id)}>reset</button>
+					<button onClick={() => this.props.lock(this.props.id)}>lock</button>
+				</div>
 			</div>
 		);
 	}
